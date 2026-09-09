@@ -9,7 +9,7 @@
 #include <stdint.h>
 
 #ifndef MUZOMBIE_DATASET_STRING_POOL_CAPACITY
-	#define MUZOMBIE_DATASET_STRING_POOL_CAPACITY 4 MB
+	#define MUZOMBIE_DATASET_STRING_POOL_CAPACITY 4 KB
 #endif
 
 /*
@@ -36,7 +36,8 @@ b - boolean
 
 typedef enum : uint8_t
 {
-	DATASET_VALUE_TYPE_UNDEFINED = 0,
+	DATASET_VALUE_TYPE_ANY = 0,
+	DATASET_VALUE_TYPE_UNDEFINED,
 	DATASET_VALUE_TYPE_ENUM,
 	DATASET_VALUE_TYPE_INTEGER,
 	DATASET_VALUE_TYPE_STRING,
@@ -45,6 +46,8 @@ typedef enum : uint8_t
 } dataset_value_type;
 
 typedef enum_ordinal (*dataset_enum_mapper_fn)(const char* string);
+
+#define DATASET_VALUE_INIT_UNDEFINED() (dataset_value){.type = DATASET_VALUE_TYPE_ANY}
 
 typedef struct dataset_value
 {
@@ -60,6 +63,8 @@ typedef struct dataset_value
 	};
 } dataset_value;
 
+#define DATASET_PROPERTY_INIT_EMPTY(id) (dataset_property){.identifier = id, .expected_type = DATASET_VALUE_TYPE_ANY, .value = DATASET_VALUE_INIT_UNDEFINED()}
+
 typedef struct dataset_property
 {
 	const char* identifier;
@@ -67,6 +72,8 @@ typedef struct dataset_property
 	dataset_value value;
 	dataset_value_type expected_type;
 } dataset_property;
+
+#define DATASET_TOPIC_INIT_EMPTY(id) (dataset_topic){.identifier = id, .properties = LIST_INIT_EMPTY(dataset_property)}
 
 typedef struct dataset_topic
 {

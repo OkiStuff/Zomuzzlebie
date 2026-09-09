@@ -40,6 +40,8 @@ typedef LIST(void) generic_list;
 	(list)->data[(list)->length++] = value;\
 } while (0)\
 
+#define LIST_GET_LAST(list) (list)->data[(list)->length - 1]
+
 #define LIST_FOREACH(list, T, var) for (int i = 0; i < (list)->length; i++) for (T* var = &(list)->data[i]; var != NULL; var = NULL)
 
 void list_ensure_capacity(generic_list* list, size_t element_size, size_t required_capacity, const char* type_name);
