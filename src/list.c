@@ -29,3 +29,11 @@ void list_ensure_capacity(generic_list* list, size_t element_size, size_t requir
 	mz_log_status_formatted(LOG_STATUS_INFO, "Grew %s list to a capacity of %zu elements (growth_rate=%.1fx, bytes=%zu)", list->capacity, (float)(list->capacity) / MAX(old_capacity, 1), required_capacity * element_size);
 #endif
 }
+
+void unload_list(generic_list* list)
+{
+	MZ_FREE(list->data);
+	list->data = NULL;
+	list->length = 0;
+	list->capacity = 0;
+}

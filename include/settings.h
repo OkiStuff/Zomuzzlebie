@@ -45,7 +45,7 @@ typedef enum : uint8_t
 	DATASET_VALUE_TYPE_BOOLEAN,
 } dataset_value_type;
 
-typedef enum_ordinal (*dataset_enum_mapper_fn)(const char* string);
+typedef enum_ordinal (*dataset_enum_mapper_fn)(const char* string, mz_boolean* failed);
 
 #define DATASET_VALUE_INIT_UNDEFINED() (dataset_value){.type = DATASET_VALUE_TYPE_ANY}
 

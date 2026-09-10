@@ -27,7 +27,7 @@ typedef LIST(void) generic_list;
 #define LIST_INIT_WITH_CAPACITY(T, c) LIST_INIT_WITH_CAPACITY_AND_ELEMENT_SIZE(T, sizeof(T), c)
 
 #define LIST_INIT_WITH_CAPACITY_AND_ELEMENT_SIZE(T, es, c) {\
-	.data = STRICT_ALLOC(es * c, #T " list", .allow_empty = MUZZLE_TRUE),\
+	.data = STRICT_ALLOC(es * (c), #T " list", .allow_empty = MUZZLE_TRUE),\
 	.length = 0,\
 	.capacity = c\
 }
@@ -40,10 +40,14 @@ typedef LIST(void) generic_list;
 	(list)->data[(list)->length++] = value;\
 } while (0)\
 
+#define LIST_GET_FIRST(list) (list)->data[0]
 #define LIST_GET_LAST(list) (list)->data[(list)->length - 1]
 
 #define LIST_FOREACH(list, T, var) for (int i = 0; i < (list)->length; i++) for (T* var = &(list)->data[i]; var != NULL; var = NULL)
 
+#define UNLOAD_LIST(list) unload_list((generic_list*)(list))
+
 void list_ensure_capacity(generic_list* list, size_t element_size, size_t required_capacity, const char* type_name);
+void unload_list(generic_list* list);
 
 #endif // MUZOMBIE_LIST_H
