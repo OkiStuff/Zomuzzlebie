@@ -406,27 +406,28 @@ mz_boolean parse_dataset_from_file(arena* string_arena, dataset* data, const cha
 			
 			break;
 		}
+	}
 
-		if (parser_state != START)
+	
+	if (parser_state != START)
+	{
+		const char* parser_state_str;
+
+		switch (parser_state)
 		{
-			const char* parser_state_str;
-
-			switch (parser_state)
-			{
-			case START: __builtin_unreachable(); break;
-			case TOPIC: parser_state_str = "topic"; break;
-			case PROPERTY: parser_state_str = "property"; break;
-			case TYPE: parser_state_str = "type"; break;
+		case START: __builtin_unreachable(); break;
+		case TOPIC: parser_state_str = "topic"; break;
+		case PROPERTY: parser_state_str = "property"; break;
+		case TYPE: parser_state_str = "type"; break;
 			
-			case GATHER_LITERAL:
-			case PARSE_LITERAL:
-				parser_state_str = "literal";
-				break;
-			}
-			
-			mz_log_status_formatted(LOG_STATUS_ERROR, "Dataset parsing error: Expected %s, found EOL at %d:%d", parser_state_str, line, character);
-			return MUZZLE_FALSE;
+		case GATHER_LITERAL:
+		case PARSE_LITERAL:
+			parser_state_str = "literal";
+			break;
 		}
+			
+		mz_log_status_formatted(LOG_STATUS_ERROR, "Dataset parsing error: Expected %s, found EOF at %d:%d", parser_state_str, line, character);
+		return MUZZLE_FALSE;
 	}
 
 	MZ_FREE(file_contents);
