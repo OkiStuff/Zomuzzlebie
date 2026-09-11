@@ -73,7 +73,7 @@ typedef struct dataset_property
 	dataset_value_type expected_type;
 } dataset_property;
 
-#define DATASET_TOPIC_INIT_EMPTY(id) (dataset_topic){.identifier = id, .properties = LIST_INIT_EMPTY(dataset_property)}
+#define DATASET_TOPIC_INIT_EMPTY(id) (dataset_topic){.identifier = id, .properties = LIST_INIT_WITH_CAPACITY(dataset_property, 4)}
 
 typedef struct dataset_topic
 {
