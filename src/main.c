@@ -1,3 +1,6 @@
+#include "arena.h"
+#include "list.h"
+#include "settings.h"
 #include <Muzzle.h>
 #include <stdio.h>
 #define SCREEN_WIDTH 1280
@@ -5,6 +8,23 @@
 
 void applet_dispatch(mz_applet* applet)
 {
+    arena a = init_arena(2 MB);
+
+    dataset data = (dataset)
+    {
+        .topics = LIST_INIT(dataset_topic)
+    };
+
+    strict_parse_dataset_from_file(&a, &data, "../test.data");
+
+    LIST_FOREACH(&data.topics, dataset_topic, topic)
+    {
+        LIST_FOREACH(&topic->properties, dataset_property, property)
+        {
+            printf("Found property %s in topic %s with value %d\n", property->identifier, topic->identifier, property->value.integer);
+        }
+    }
+
     while (mz_keep_applet(applet))
     {
         mz_begin_drawing(applet);

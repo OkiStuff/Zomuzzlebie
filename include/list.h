@@ -43,7 +43,7 @@ typedef LIST(void) generic_list;
 #define LIST_GET_FIRST(list) (list)->data[0]
 #define LIST_GET_LAST(list) (list)->data[(list)->length - 1]
 
-#define LIST_FOREACH(list, T, var) for (int i = 0; i < (list)->length; i++) for (T* var = &(list)->data[i]; var != NULL; var = NULL)
+#define LIST_FOREACH(list, T, var) for (int idx_##var = 0; idx_##var < (list)->length; idx_##var++) for (T* var = &((list)->data[idx_##var]); var != NULL; var = NULL)
 
 #define UNLOAD_LIST(list) unload_list((generic_list*)(list))
 

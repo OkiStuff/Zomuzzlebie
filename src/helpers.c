@@ -29,7 +29,7 @@ mz_boolean read_file(const char* filepath, char** out, size_t out_capacity)
 
 	const long int bytes_to_write = MIN(out_capacity - 1, size);
 	fread(*out, bytes_to_write, 1, file);
-	*out[bytes_to_write] = '\0';
+	(*out)[bytes_to_write] = '\0';
 	fclose(file);
 
 	return MUZZLE_TRUE;

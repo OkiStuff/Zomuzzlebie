@@ -128,7 +128,7 @@ mz_boolean parse_dataset_from_file(arena* string_arena, dataset* data, const cha
 
 	char* cursor = file_contents;
 
-	uint32_t line = 0;
+	uint32_t line = 1;
 	uint32_t character = 0;
 
 	LIST(char) string_gathering_buffer = {0};
@@ -189,6 +189,7 @@ mz_boolean parse_dataset_from_file(arena* string_arena, dataset* data, const cha
 			break;
 
 		case TYPE:
+			/* declaration right after label is invalid */;
 			dataset_value_type type = DATASET_VALUE_TYPE_UNDEFINED;
 			
 			switch (c)
@@ -235,7 +236,7 @@ mz_boolean parse_dataset_from_file(arena* string_arena, dataset* data, const cha
 
 			curr_property->value.type = type;
 			parser_state = GATHER_LITERAL;
-			
+
 			break;
 
 		case GATHER_LITERAL:
@@ -255,6 +256,9 @@ mz_boolean parse_dataset_from_file(arena* string_arena, dataset* data, const cha
 					return MUZZLE_FALSE;
 				}
 
+				cursor--;
+				parser_state = PARSE_LITERAL;
+
 				break;
 
 			case DATASET_VALUE_TYPE_ENUM:
@@ -271,6 +275,7 @@ mz_boolean parse_dataset_from_file(arena* string_arena, dataset* data, const cha
 
 					scratch[scratch_length] = '\0';
 					parser_state = PARSE_LITERAL;
+					cursor--;
 					break;
 				}
 
@@ -344,6 +349,7 @@ mz_boolean parse_dataset_from_file(arena* string_arena, dataset* data, const cha
 				break;
 
 			case DATASET_VALUE_TYPE_ENUM:
+				/* declaration right after label is invalid */;
 				mz_boolean failed = MUZZLE_FALSE;
 				enum_ordinal ordinal = curr_property->enum_mapper(scratch, &failed);
 
@@ -361,6 +367,7 @@ mz_boolean parse_dataset_from_file(arena* string_arena, dataset* data, const cha
 				break;
 
 			case DATASET_VALUE_TYPE_STRING:
+				/* declaration right after label is invalid */;
 				arena_allocation string = arena_alloc(string_arena, sizeof(char) * (scratch_length + 1));
 				char* src = string_gathering_buffer.data != NULL ? string_gathering_buffer.data : scratch;
 
@@ -445,4 +452,12 @@ void strict_parse_dataset_from_file(arena* string_arena, dataset* data, const ch
 	}
 }
 
-void unload_dataset(dataset* data);
+void unload_dataset(dataset* data)
+{
+	LIST_FOREACH(&data->topics, dataset_topic, topic)
+	{
+		UNLOAD_LIST(&topic->properties);
+	}
+
+	UNLOAD_LIST(&data->topics);
+}
