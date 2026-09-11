@@ -408,7 +408,6 @@ mz_boolean parse_dataset_from_file(arena* string_arena, dataset* data, const cha
 		}
 	}
 
-	
 	if (parser_state != START)
 	{
 		const char* parser_state_str;
